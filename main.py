@@ -1,8 +1,10 @@
-from src.tools.tools import tavily_search,scrape_webpage
+from src.pipeline.pipeline import run_research_system
 from rich import print
 
-web_scrape = scrape_webpage.invoke({"url": "https://aiweekly.co/"})
-taviley_results = tavily_search.invoke({"query": "AI Weekly"})
+topic = "The impact of artificial intelligence on healthcare"
+state = run_research_system(topic, on_step=lambda step, _: print(f"[green]✓[/green] {step} done"))
 
-print(web_scrape)
-print(taviley_results)
+print("\n[bold green]Generated Report:[/bold green]")
+print(state["report"])
+print("\n[bold blue]Critique of the Report:[/bold blue]")
+print(state["critique"])

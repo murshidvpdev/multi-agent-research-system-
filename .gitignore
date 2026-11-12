@@ -14,3 +14,7 @@ wheels/
 .DS_Store
 .env
 .python-version
+
+.agents/
+.claude/
+.streamlit/

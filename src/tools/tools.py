@@ -22,7 +22,7 @@ def tavily_search(query: str) -> str:
         results = tavily.search(query, max_results=5)
         out = []
         for result in results['results']:
-            out.append(f"Title: {result['title']}\nURL: {result['url']}\nSnippet: {result['raw_content']}\n")
+            out.append(f"Title: {result['title']}\nURL: {result['url']}\nSnippet: {result.get('content', '')}\n")
         return "\n".join(out)
     except Exception as e:
         return f"An error occurred while searching: {str(e)}"
@@ -34,7 +34,7 @@ def scrape_webpage(url: str) -> str:
     Scrape the content of a webpage and return the text.
     """
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
         response.raise_for_status()
         html_content = response.text
 
@@ -51,6 +51,7 @@ def scrape_webpage(url: str) -> str:
         if trafilatura_text:
             text += "\n\n" + trafilatura_text
 
-        return text
+        # Cap the length so a huge page doesn't exceed the LLM's token limit
+        return text[:6000]
     except Exception as e:
         return f"An error occurred while scraping the webpage: {str(e)}"
